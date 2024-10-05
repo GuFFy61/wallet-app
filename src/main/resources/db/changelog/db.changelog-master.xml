@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- ChangeSet 1: Создание таблицы кошельков (wallets) -->
+    <changeSet id="1" author="your_name">
+        <createTable tableName="wallets">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="balance" type="decimal(19, 2)">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_at" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- ChangeSet 2: Создание таблицы транзакций (transactions) -->
+    <changeSet id="2" author="your_name">
+        <createTable tableName="transactions">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="wallet_id" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="operation_type" type="varchar(10)">
+                <constraints nullable="false" />
+            </column>
+            <column name="amount" type="decimal(19, 2)">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+            <foreignKeyConstraint baseColumnNames="wallet_id"
+                                  baseTableName="transactions"
+                                  referencedColumnNames="id"
+                                  referencedTableName="wallets"
+                                  constraintName="fk_transactions_wallet_id" />
+        </createTable>
+    </changeSet>
+
+    <!-- ChangeSet 3: Создание индекса для быстрого поиска по балансу -->
+    <changeSet id="3" author="your_name">
+        <createIndex indexName="idx_wallets_balance" tableName="wallets">
+            <column name="balance" />
+        </createIndex>
+    </changeSet>
+
+    <!-- ChangeSet 4: Добавление временных меток при обновлении записей в кошельках -->
+    <changeSet id="4" author="your_name">
+        <addDefaultValue tableName="wallets" columnName="updated_at" defaultValueComputed="CURRENT_TIMESTAMP" />
+    </changeSet>
+
+</databaseChangeLog>
